@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>일일재고현황표 - 1.2x 강조 버전</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 50px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            text-decoration: underline;
+            font-size: 38px;
+            margin-bottom: 70px;
+            letter-spacing: 15px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        /* 그리드 컨테이너 (700px~800px 가량) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(7, 110px);
+            grid-template-rows: repeat(2, 130px);
+            position: relative;
+            border: 2px solid #333;
+            background-color: #fff;
+        }
+
+        .rect {
+            border: 0.5px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 1;
+            transition: all 0.25s ease-in-out; /* 부드러운 확대/축소 */
+        }
+
+        /* 원형 데이터 (모서리 배치) */
+        .circle {
+            position: absolute;
+            width: 95px;
+            height: 95px;
+            border: 1px solid #000;
+            border-radius: 50%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transform: translate(-50%, -50%);
+            transition: all 0.25s ease-in-out;
+        }
+
+        /* 텍스트 색상 및 스타일 */
+        .blue { color: #0000FF; }
+        .orange { color: #C55A11; }
+        .green-pos { color: #70AD47; font-size: 11px; margin-top: 2px; }
+        .val-red { color: #FF0000; }
+        .code { font-size: 14px; font-weight: 800; }
+        .value { font-size: 15px; margin: 1px 0; }
+        .bg-pink { background-color: #FFD9EB; }
+
+        /* --- 강조 스타일 (1.2배 확대) --- */
+        .highlight {
+            transform: translate(-50%, -50%) scale(1.2) !important;
+            z-index: 100 !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid #000 !important;
+            background-color: #fff !important; /* 배경색 유지 */
+        }
+        
+        /* 사각형 전용 강조 (기준점이 중앙이므로 translate 불필요) */
+        .rect.highlight {
+            transform: scale(1.2) !important;
+        }
+
+        /* 버튼 영역 */
+        .button-container {
+            margin-top: 100px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover { background-color: #f0f0f0; border-color: #bbb; }
+        .filter-btn.active {
+            background-color: #333;
+            color: #fff;
+            border-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>일 일 재 고 현 황 표</h1>
+
+    <div class="grid-container">
+        <div class="circle" data-type="WUR" style="top: 0%; left: 14.28%;"><span class="code orange">WUR</span><span class="value">1,600.000</span><span class="green-pos">A101</span></div>
+        <div class="circle" data-type="WCRS" style="top: 0%; left: 28.57%;"><span class="code orange">WCRS</span><span class="value">1,700.557</span><span class="green-pos">A102</span></div>
+        <div class="circle" data-type="WASW" style="top: 0%; left: 42.85%;"><span class="code blue">WASW</span><span class="value">1,360.392</span><span class="green-pos">A103</span></div>
+        <div class="circle" data-type="WASWP" style="top: 0%; left: 57.14%;"><span class="code blue">WASWP</span><span class="value">1,403.039</span><span class="green-pos">A104</span></div>
+        <div class="circle" data-type="WUR" style="top: 0%; left: 71.42%;"><span class="code orange">WUR</span><span class="value">1,700.915</span><span class="green-pos">A105</span></div>
+        <div class="circle" data-type="WNS" style="top: 0%; left: 85.71%;"><span class="code orange">WNS</span><span class="value">1,637.684</span><span class="green-pos">A106</span></div>
+
+        <div class="rect" data-type="WUSL9.0"><span class="code blue">WUSL9.0</span><span class="value">146.960</span><span class="green-pos">A201</span></div>
+        <div class="rect" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">420.000</span><span class="green-pos">A202</span></div>
+        <div class="rect" data-type="WUR"><span class="code orange">WUR</span><span class="value">420.679</span><span class="green-pos">A203</span></div>
+        <div class="rect" data-type="WUR"><span class="code orange">WUR</span><span class="value">420.233</span><span class="green-pos">A204</span></div>
+        <div class="rect" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">420.000</span><span class="green-pos">A205</span></div>
+        <div class="rect" data-type="WUSL9.0"><span class="code blue">WUSL9.0</span><span class="value">419.860</span><span class="green-pos">A206</span></div>
+        <div class="rect" data-type="WUR"><span class="code orange">WUR</span><span class="value">158.126</span><span class="green-pos">A207</span></div>
+
+        <div class="circle" data-type="WUSH" style="top: 50%; left: 14.28%;"><span class="code blue">WUSH</span><span class="value">864.386</span><span class="green-pos">A301</span></div>
+        <div class="circle" data-type="WUSH" style="top: 50%; left: 28.57%;"><span class="code blue">WUSH</span><span class="value">1,695.227</span><span class="green-pos">A302</span></div>
+        <div class="circle" data-type="WUSH" style="top: 50%; left: 42.85%;"><span class="code blue">WUSH</span><span class="value">1,671.185</span><span class="green-pos">A303</span></div>
+        <div class="circle" data-type="WUSH" style="top: 50%; left: 57.14%;"><span class="code blue">WUSH</span><span class="value">1,690.285</span><span class="green-pos">A304</span></div>
+        <div class="circle" data-type="WNS" style="top: 50%; left: 71.42%;"><span class="code orange">WNS</span><span class="value">1,697.176</span><span class="green-pos">A305</span></div>
+        <div class="circle" data-type="WUR" style="top: 50%; left: 85.71%;"><span class="code orange">WUR</span><span class="value">1,701.166</span><span class="green-pos">A306</span></div>
+
+        <div class="rect" data-type="WCRS"><span class="code orange">WCRS</span><span class="value">170.000</span><span class="green-pos">A401</span></div>
+        <div class="rect" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">410.000</span><span class="green-pos">A402</span></div>
+        <div class="rect bg-pink" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A403</span></div>
+        <div class="rect" data-type="WNS"><span class="code orange">WNS</span><span class="value">419.287</span><span class="green-pos">A404</span></div>
+        <div class="rect bg-pink" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A405</span></div>
+        <div class="rect bg-pink" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A406</span></div>
+        <div class="rect" data-type="WNS"><span class="code orange">WNS</span><span class="value">170.000</span><span class="green-pos">A407</span></div>
+
+        <div class="circle" data-type="WUSH" style="top: 100%; left: 14.28%;"><span class="code blue">WUSH</span><span class="value">1,557.437</span><span class="green-pos">A501</span></div>
+        <div class="circle" data-type="WNS" style="top: 100%; left: 28.57%;"><span class="code orange">WNS</span><span class="value">1,703.834</span><span class="green-pos">A502</span></div>
+        <div class="circle" data-type="WUSH" style="top: 100%; left: 42.85%;"><span class="code blue">WUSH</span><span class="value">1,645.290</span><span class="green-pos">A503</span></div>
+        <div class="circle" data-type="WCRS" style="top: 100%; left: 57.14%;"><span class="code orange">WCRS</span><span class="value">956.294</span><span class="green-pos">A504</span></div>
+        <div class="circle" data-type="WASWP" style="top: 100%; left: 71.42%;"><span class="code blue">WASWP</span><span class="value">1,696.740</span><span class="green-pos">A505</span></div>
+        <div class="circle" data-type="WUR" style="top: 100%; left: 85.71%;"><span class="code orange">WUR</span><span class="value">1,700.906</span><span class="green-pos">A506</span></div>
+    </div>
+
+    <div class="button-container">
+        <button class="filter-btn active" onclick="highlight('ALL', this)">모두 보기</button>
+        <button class="filter-btn" onclick="highlight('WUR', this)">WUR</button>
+        <button class="filter-btn" onclick="highlight('WCRS', this)">WCRS</button>
+        <button class="filter-btn" onclick="highlight('WASW', this)">WASW</button>
+        <button class="filter-btn" onclick="highlight('WASWP', this)">WASWP</button>
+        <button class="filter-btn" onclick="highlight('WNS', this)">WNS</button>
+        <button class="filter-btn" onclick="highlight('WUSH', this)">WUSH</button>
+        <button class="filter-btn" onclick="highlight('WUSL9.0', this)">WUSL9.0</button>
+    </div>
+
+    <script>
+        function highlight(type, btnElement) {
+            // 1. 모든 요소에서 강조 클래스 제거
+            const items = document.querySelectorAll('.circle, .rect');
+            items.forEach(item => item.classList.remove('highlight'));
+
+            // 2. 모든 버튼 비활성화 스타일 적용 후 클릭한 버튼만 활성화
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            if (type === 'ALL') return;
+
+            // 3. 선택한 품목(data-type)만 강조 클래스 추가
+            const targets = document.querySelectorAll(`[data-type="${type}"]`);
+            targets.forEach(target => {
+                target.classList.add('highlight');
+            });
+        }
+    </script>
+
+</body>
+</html>
