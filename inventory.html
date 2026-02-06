@@ -2,109 +2,36 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>일일재고현황표 - 데이터 업데이트 버전</title>
+    <title>일일재고현황표 - 도형별 색상 고정 버전</title>
     <style>
-        /* 기존 스타일 유지 (절대 수정 금지 원칙 준수) */
-        body {
-            font-family: 'Malgun Gothic', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px;
-            background-color: #f8f9fa;
-        }
-
-        h1 {
-            text-decoration: underline;
-            font-size: 38px;
-            margin-bottom: 70px;
-            letter-spacing: 15px;
-            font-weight: bold;
-            color: #222;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(7, 110px);
-            grid-template-rows: repeat(2, 130px);
-            position: relative;
-            border: 2px solid #333;
-            background-color: #fff;
-        }
-
-        .rect {
-            border: 0.5px solid #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            z-index: 1;
-            transition: all 0.25s ease-in-out;
-        }
-
-        .circle {
-            position: absolute;
-            width: 95px;
-            height: 95px;
-            border: 1px solid #000;
-            border-radius: 50%;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            transform: translate(-50%, -50%);
-            transition: all 0.25s ease-in-out;
-        }
-
-        .blue { color: #0000FF; }
-        .orange { color: #C55A11; }
+        /* [기존 디자인 및 레이아웃 유지 - 절대 수정 금지] */
+        body { font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 50px; background-color: #f8f9fa; }
+        h1 { text-decoration: underline; font-size: 38px; margin-bottom: 70px; letter-spacing: 15px; font-weight: bold; color: #222; }
+        .grid-container { display: grid; grid-template-columns: repeat(7, 110px); grid-template-rows: repeat(2, 130px); position: relative; border: 2px solid #333; background-color: #fff; }
+        
+        /* 도형 기본 스타일 */
+        .rect { border: 0.5px solid #000; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; z-index: 1; transition: all 0.25s ease-in-out; }
+        .circle { position: absolute; width: 95px; height: 95px; border: 1px solid #000; border-radius: 50%; background-color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; transform: translate(-50%, -50%); transition: all 0.25s ease-in-out; }
+        
+        /* [핵심 수정] 도형별 글자 색상 고정 */
+        .circle .code { color: #0000FF !important; } /* 원형 내부 글자: 파란색 */
+        .rect .code { color: #C55A11 !important; }   /* 사각형 내부 글자: 주황색 */
+        
         .green-pos { color: #70AD47; font-size: 11px; margin-top: 2px; }
         .val-red { color: #FF0000; }
         .code { font-size: 14px; font-weight: 800; }
-        .value { font-size: 15px; margin: 1px 0; }
+        .value { font-size: 15px; margin: 1px 0; color: #000; } /* 수량은 가독성을 위해 검정 유지 */
         .bg-pink { background-color: #FFD9EB; }
-
-        .highlight {
-            transform: translate(-50%, -50%) scale(1.2) !important;
-            z-index: 100 !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 2px solid #000 !important;
-            background-color: #fff !important;
-        }
-        
+        .highlight { transform: translate(-50%, -50%) scale(1.2) !important; z-index: 100 !important; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 2px solid #000 !important; background-color: #fff !important; }
         .rect.highlight { transform: scale(1.2) !important; }
 
-        /* 입력 UI 스타일 추가 */
-        .admin-panel {
-            margin-top: 50px;
-            padding: 20px;
-            background: #eee;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .admin-panel input, .admin-panel select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-
-        .update-btn {
-            padding: 8px 15px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
+        /* 입력 UI 스타일 */
+        .batch-admin-area { margin-top: 50px; padding: 25px; background: #ffffff; border: 1px solid #ddd; border-radius: 12px; width: 700px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
+        .batch-admin-area h3 { margin-top: 0; color: #333; font-size: 18px; }
+        .batch-admin-area textarea { width: 100%; height: 180px; margin-top: 10px; padding: 12px; font-family: 'Consolas', monospace; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; resize: vertical; background-color: #fcfcfc; }
+        .update-all-btn { margin-top: 15px; padding: 12px 40px; background: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; transition: background 0.2s; }
+        .update-all-btn:hover { background: #218838; }
+        .hint-text { font-size: 12px; color: #888; margin-top: 8px; }
         .button-container { margin-top: 30px; display: flex; gap: 12px; }
         .filter-btn { padding: 10px 20px; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 8px; }
         .filter-btn.active { background: #333; color: #fff; }
@@ -115,58 +42,49 @@
     <h1>일 일 재 고 현 황 표</h1>
 
     <div class="grid-container" id="mainGrid">
-        <div class="circle" data-pos="A101" data-type="WUR" style="top: 0%; left: 14.28%;"><span class="code orange">WUR</span><span class="value">1,600.000</span><span class="green-pos">A101</span></div>
-        <div class="circle" data-pos="A102" data-type="WCRS" style="top: 0%; left: 28.57%;"><span class="code orange">WCRS</span><span class="value">1,700.557</span><span class="green-pos">A102</span></div>
-        <div class="circle" data-pos="A103" data-type="WASW" style="top: 0%; left: 42.85%;"><span class="code blue">WASW</span><span class="value">1,360.392</span><span class="green-pos">A103</span></div>
-        <div class="circle" data-pos="A104" data-type="WASWP" style="top: 0%; left: 57.14%;"><span class="code blue">WASWP</span><span class="value">1,403.039</span><span class="green-pos">A104</span></div>
-        <div class="circle" data-pos="A105" data-type="WUR" style="top: 0%; left: 71.42%;"><span class="code orange">WUR</span><span class="value">1,700.915</span><span class="green-pos">A105</span></div>
-        <div class="circle" data-pos="A106" data-type="WNS" style="top: 0%; left: 85.71%;"><span class="code orange">WNS</span><span class="value">1,637.684</span><span class="green-pos">A106</span></div>
+        <div class="circle" data-pos="A101" data-type="WUR" style="top: 0%; left: 14.28%;"><span class="code">WUR</span><span class="value">1,600.000</span><span class="green-pos">A101</span></div>
+        <div class="circle" data-pos="A102" data-type="WCRS" style="top: 0%; left: 28.57%;"><span class="code">WCRS</span><span class="value">1,700.557</span><span class="green-pos">A102</span></div>
+        <div class="circle" data-pos="A103" data-type="WASW" style="top: 0%; left: 42.85%;"><span class="code">WASW</span><span class="value">1,360.392</span><span class="green-pos">A103</span></div>
+        <div class="circle" data-pos="A104" data-type="WASWP" style="top: 0%; left: 57.14%;"><span class="code">WASWP</span><span class="value">1,403.039</span><span class="green-pos">A104</span></div>
+        <div class="circle" data-pos="A105" data-type="WUR" style="top: 0%; left: 71.42%;"><span class="code">WUR</span><span class="value">1,700.915</span><span class="green-pos">A105</span></div>
+        <div class="circle" data-pos="A106" data-type="WNS" style="top: 0%; left: 85.71%;"><span class="code">WNS</span><span class="value">1,637.684</span><span class="green-pos">A106</span></div>
 
-        <div class="rect" data-pos="A201" data-type="WUSL9.0"><span class="code blue">WUSL9.0</span><span class="value">146.960</span><span class="green-pos">A201</span></div>
-        <div class="rect" data-pos="A202" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">420.000</span><span class="green-pos">A202</span></div>
-        <div class="rect" data-pos="A203" data-type="WUR"><span class="code orange">WUR</span><span class="value">420.679</span><span class="green-pos">A203</span></div>
-        <div class="rect" data-pos="A204" data-type="WUR"><span class="code orange">WUR</span><span class="value">420.233</span><span class="green-pos">A204</span></div>
-        <div class="rect" data-pos="A205" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">420.000</span><span class="green-pos">A205</span></div>
-        <div class="rect" data-pos="A206" data-type="WUSL9.0"><span class="code blue">WUSL9.0</span><span class="value">419.860</span><span class="green-pos">A206</span></div>
-        <div class="rect" data-pos="A207" data-type="WUR"><span class="code orange">WUR</span><span class="value">158.126</span><span class="green-pos">A207</span></div>
+        <div class="rect" data-pos="A201" data-type="WUSL9.0"><span class="code">WUSL9.0</span><span class="value">146.960</span><span class="green-pos">A201</span></div>
+        <div class="rect" data-pos="A202" data-type="WUSH"><span class="code">WUSH</span><span class="value">420.000</span><span class="green-pos">A202</span></div>
+        <div class="rect" data-pos="A203" data-type="WUR"><span class="code">WUR</span><span class="value">420.679</span><span class="green-pos">A203</span></div>
+        <div class="rect" data-pos="A204" data-type="WUR"><span class="code">WUR</span><span class="value">420.233</span><span class="green-pos">A204</span></div>
+        <div class="rect" data-pos="A205" data-type="WUSH"><span class="code">WUSH</span><span class="value">420.000</span><span class="green-pos">A205</span></div>
+        <div class="rect" data-pos="A206" data-type="WUSL9.0"><span class="code">WUSL9.0</span><span class="value">419.860</span><span class="green-pos">A206</span></div>
+        <div class="rect" data-pos="A207" data-type="WUR"><span class="code">WUR</span><span class="value">158.126</span><span class="green-pos">A207</span></div>
 
-        <div class="circle" data-pos="A301" data-type="WUSH" style="top: 50%; left: 14.28%;"><span class="code blue">WUSH</span><span class="value">864.386</span><span class="green-pos">A301</span></div>
-        <div class="circle" data-pos="A302" data-type="WUSH" style="top: 50%; left: 28.57%;"><span class="code blue">WUSH</span><span class="value">1,695.227</span><span class="green-pos">A302</span></div>
-        <div class="circle" data-pos="A303" data-type="WUSH" style="top: 50%; left: 42.85%;"><span class="code blue">WUSH</span><span class="value">1,671.185</span><span class="green-pos">A303</span></div>
-        <div class="circle" data-pos="A304" data-type="WUSH" style="top: 50%; left: 57.14%;"><span class="code blue">WUSH</span><span class="value">1,690.285</span><span class="green-pos">A304</span></div>
-        <div class="circle" data-pos="A305" data-type="WNS" style="top: 50%; left: 71.42%;"><span class="code orange">WNS</span><span class="value">1,697.176</span><span class="green-pos">A305</span></div>
-        <div class="circle" data-pos="A306" data-type="WUR" style="top: 50%; left: 85.71%;"><span class="code orange">WUR</span><span class="value">1,701.166</span><span class="green-pos">A306</span></div>
+        <div class="circle" data-pos="A301" data-type="WUSH" style="top: 50%; left: 14.28%;"><span class="code">WUSH</span><span class="value">864.386</span><span class="green-pos">A301</span></div>
+        <div class="circle" data-pos="A302" data-type="WUSH" style="top: 50%; left: 28.57%;"><span class="code">WUSH</span><span class="value">1,695.227</span><span class="green-pos">A302</span></div>
+        <div class="circle" data-pos="A303" data-type="WUSH" style="top: 50%; left: 42.85%;"><span class="code">WUSH</span><span class="value">1,671.185</span><span class="green-pos">A303</span></div>
+        <div class="circle" data-pos="A304" data-type="WUSH" style="top: 50%; left: 57.14%;"><span class="code">WUSH</span><span class="value">1,690.285</span><span class="green-pos">A304</span></div>
+        <div class="circle" data-pos="A305" data-type="WNS" style="top: 50%; left: 71.42%;"><span class="code">WNS</span><span class="value">1,697.176</span><span class="green-pos">A305</span></div>
+        <div class="circle" data-pos="A306" data-type="WUR" style="top: 50%; left: 85.71%;"><span class="code">WUR</span><span class="value">1,701.166</span><span class="green-pos">A306</span></div>
 
-        <div class="rect" data-pos="A401" data-type="WCRS"><span class="code orange">WCRS</span><span class="value">170.000</span><span class="green-pos">A401</span></div>
-        <div class="rect" data-pos="A402" data-type="WUSH"><span class="code blue">WUSH</span><span class="value">410.000</span><span class="green-pos">A402</span></div>
-        <div class="rect bg-pink" data-pos="A403" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A403</span></div>
-        <div class="rect" data-pos="A404" data-type="WNS"><span class="code orange">WNS</span><span class="value">419.287</span><span class="green-pos">A404</span></div>
-        <div class="rect bg-pink" data-pos="A405" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A405</span></div>
-        <div class="rect bg-pink" data-pos="A406" data-type="WUSH"><span class="code blue">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A406</span></div>
-        <div class="rect" data-pos="A407" data-type="WNS"><span class="code orange">WNS</span><span class="value">170.000</span><span class="green-pos">A407</span></div>
+        <div class="rect" data-pos="A401" data-type="WCRS"><span class="code">WCRS</span><span class="value">170.000</span><span class="green-pos">A401</span></div>
+        <div class="rect" data-pos="A402" data-type="WUSH"><span class="code">WUSH</span><span class="value">410.000</span><span class="green-pos">A402</span></div>
+        <div class="rect bg-pink" data-pos="A403" data-type="WUSH"><span class="code">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A403</span></div>
+        <div class="rect" data-pos="A404" data-type="WNS"><span class="code">WNS</span><span class="value">419.287</span><span class="green-pos">A404</span></div>
+        <div class="rect bg-pink" data-pos="A405" data-type="WUSH"><span class="code">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A405</span></div>
+        <div class="rect bg-pink" data-pos="A406" data-type="WUSH"><span class="code">WUSH</span><span class="value val-red">0.000</span><span class="green-pos">A406</span></div>
+        <div class="rect" data-pos="A407" data-type="WNS"><span class="code">WNS</span><span class="value">170.000</span><span class="green-pos">A407</span></div>
 
-        <div class="circle" data-pos="A501" data-type="WUSH" style="top: 100%; left: 14.28%;"><span class="code blue">WUSH</span><span class="value">1,557.437</span><span class="green-pos">A501</span></div>
-        <div class="circle" data-pos="A502" data-type="WNS" style="top: 100%; left: 28.57%;"><span class="code orange">WNS</span><span class="value">1,703.834</span><span class="green-pos">A502</span></div>
-        <div class="circle" data-pos="A503" data-type="WUSH" style="top: 100%; left: 42.85%;"><span class="code blue">WUSH</span><span class="value">1,645.290</span><span class="green-pos">A503</span></div>
-        <div class="circle" data-pos="A504" data-type="WCRS" style="top: 100%; left: 57.14%;"><span class="code orange">WCRS</span><span class="value">956.294</span><span class="green-pos">A504</span></div>
-        <div class="circle" data-pos="A505" data-type="WASWP" style="top: 100%; left: 71.42%;"><span class="code blue">WASWP</span><span class="value">1,696.740</span><span class="green-pos">A505</span></div>
-        <div class="circle" data-pos="A506" data-type="WUR" style="top: 100%; left: 85.71%;"><span class="code orange">WUR</span><span class="value">1,700.906</span><span class="green-pos">A506</span></div>
+        <div class="circle" data-pos="A501" data-type="WUSH" style="top: 100%; left: 14.28%;"><span class="code">WUSH</span><span class="value">1,557.437</span><span class="green-pos">A501</span></div>
+        <div class="circle" data-pos="A502" data-type="WNS" style="top: 100%; left: 28.57%;"><span class="code">WNS</span><span class="value">1,703.834</span><span class="green-pos">A502</span></div>
+        <div class="circle" data-pos="A503" data-type="WUSH" style="top: 100%; left: 42.85%;"><span class="code">WUSH</span><span class="value">1,645.290</span><span class="green-pos">A503</span></div>
+        <div class="circle" data-pos="A504" data-type="WCRS" style="top: 100%; left: 57.14%;"><span class="code">WCRS</span><span class="value">956.294</span><span class="green-pos">A504</span></div>
+        <div class="circle" data-pos="A505" data-type="WASWP" style="top: 100%; left: 71.42%;"><span class="code">WASWP</span><span class="value">1,696.740</span><span class="green-pos">A505</span></div>
+        <div class="circle" data-pos="A506" data-type="WUR" style="top: 100%; left: 85.71%;"><span class="code">WUR</span><span class="value">1,700.906</span><span class="green-pos">A506</span></div>
     </div>
 
-    <div class="admin-panel">
-        <strong>데이터 수정:</strong>
-        <input type="text" id="targetPos" placeholder="위치(예: A101)" size="10">
-        <select id="targetType">
-            <option value="WUR">WUR</option>
-            <option value="WCRS">WCRS</option>
-            <option value="WASW">WASW</option>
-            <option value="WASWP">WASWP</option>
-            <option value="WNS">WNS</option>
-            <option value="WUSH">WUSH</option>
-            <option value="WUSL9.0">WUSL9.0</option>
-        </select>
-        <input type="number" id="targetVal" placeholder="수량" step="0.001">
-        <button class="update-btn" onclick="updateData()">수정하기</button>
+    <div class="batch-admin-area">
+        <h3>📋 데이터 입력 (엑셀 복사/붙여넣기)</h3>
+        <textarea id="excelInput" placeholder="여기에 엑셀 데이터를 붙여넣으세요"></textarea>
+        <button class="update-all-btn" onclick="applyBatchData()">현황표 업데이트</button>
+        <p class="hint-text">입력 시 자동으로 원형은 파란색, 사각형은 주황색 글자가 적용됩니다.</p>
     </div>
 
     <div class="button-container">
@@ -181,51 +99,57 @@
     </div>
 
     <script>
-        // 1. 데이터 업데이트 함수
-        function updateData() {
-            const pos = document.getElementById('targetPos').value.toUpperCase();
-            const type = document.getElementById('targetType').value;
-            const val = document.getElementById('targetVal').value;
+        const POS_ORDER = [
+            "A101","A102","A103","A104","A105","A106",
+            "A201","A202","A203","A204","A205","A206","A207",
+            "A301","A302","A303","A304","A305","A306",
+            "A401","A402","A403","A404","A405","A406","A407",
+            "A501","A502","A503","A504","A505","A506"
+        ];
 
-            const target = document.querySelector(`[data-pos="${pos}"]`);
-            
-            if (!target) {
-                alert("해당 위치 번호를 찾을 수 없습니다. (예: A101)");
-                return;
-            }
+        function applyBatchData() {
+            const rawText = document.getElementById('excelInput').value.trim();
+            if(!rawText) { alert("데이터를 입력해주세요!"); return; }
 
-            // 코드명 및 데이터 속성 변경
-            const codeSpan = target.querySelector('.code');
-            codeSpan.innerText = type;
-            target.setAttribute('data-type', type);
+            const rows = rawText.split('\n');
+            let updatedCount = 0;
 
-            // 색상 자동 변경 (WUR, WCRS, WNS는 주황색 / 나머지는 파란색)
-            if(['WUR', 'WCRS', 'WNS'].includes(type)) {
-                codeSpan.className = 'code orange';
-            } else {
-                codeSpan.className = 'code blue';
-            }
+            rows.forEach((row, index) => {
+                if(index >= POS_ORDER.length) return;
+                const data = row.trim().split(/\s+/);
+                if(data.length < 2) return;
 
-            // 수량 변경 (소수점 3자리 포맷팅)
-            if (val !== "") {
-                const formattedVal = parseFloat(val).toLocaleString(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3});
-                const valSpan = target.querySelector('.value');
-                valSpan.innerText = formattedVal;
+                const newType = data[0].toUpperCase();
+                const newVal = data[1].replace(/,/g, '');
+                const pos = POS_ORDER[index];
 
-                // 0일 경우 빨간색 처리 및 핑크 배경 (기존 로직 유지)
-                if (parseFloat(val) === 0) {
-                    valSpan.classList.add('val-red');
-                    target.classList.add('bg-pink');
-                } else {
-                    valSpan.classList.remove('val-red');
-                    target.classList.remove('bg-pink');
+                const target = document.querySelector(`[data-pos="${pos}"]`);
+                if(target) {
+                    // 품목명 업데이트
+                    target.querySelector('.code').innerText = newType;
+                    target.setAttribute('data-type', newType);
+
+                    // 수량 업데이트
+                    const valSpan = target.querySelector('.value');
+                    const numVal = parseFloat(newVal);
+                    if(!isNaN(numVal)) {
+                        valSpan.innerText = numVal.toLocaleString(undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3});
+                        
+                        // 0일 때 강조 로직 유지
+                        if (numVal === 0) {
+                            valSpan.classList.add('val-red');
+                            target.classList.add('bg-pink');
+                        } else {
+                            valSpan.classList.remove('val-red');
+                            target.classList.remove('bg-pink');
+                        }
+                    }
+                    updatedCount++;
                 }
-            }
-            
-            alert(`${pos} 데이터가 수정되었습니다.`);
+            });
+            alert(updatedCount + "개의 데이터가 수정되었습니다.");
         }
 
-        // 2. 기존 필터링 함수 (유지)
         function highlight(type, btnElement) {
             const items = document.querySelectorAll('.circle, .rect');
             items.forEach(item => item.classList.remove('highlight'));
@@ -237,6 +161,5 @@
             targets.forEach(target => { target.classList.add('highlight'); });
         }
     </script>
-
 </body>
 </html>
